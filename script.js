@@ -1,16 +1,10 @@
-
-//TOGGLE
-
-
-  const toggle = document.getElementById("multiSelectToggle");
-  const modeLabel = document.getElementById("modeLabel");
-  let multiSelectEnabled = false;
-
-  toggle.addEventListener("change", () => {
-    multiSelectEnabled = toggle.checked;
-    modeLabel.textContent = multiSelectEnabled ? "Select multiple graduate attributes" : "Select one graduate attribute at a time";
-  });
-
+const toggle = document.getElementById("multiSelectToggle");
+const modeLabel = document.getElementById("modeLabel");
+const clearSelectionButton = document.getElementById("clearSelection");
+const selectionSummary = document.getElementById("selectionSummary");
+const activityCount = document.getElementById("activityCount");
+const assessmentCount = document.getElementById("assessmentCount");
+let multiSelectEnabled = false;
 
 /*
 CATEGORY_DATA:
@@ -115,125 +109,118 @@ const TEXT_COLORS = {
 
 // Track which categories are currently selected
 const activeCategories = new Set();
+const categoryButtons = [...document.querySelectorAll(".category-icon")];
+const activityElements = [...document.querySelectorAll(".rectangle.grey")];
+const assessmentElements = [...document.querySelectorAll(".rectangle.white")];
 
-function toggleCategory(categoryId) {
-  const data = CATEGORY_DATA[categoryId];
-  const bgColor = RECTANGLE_COLORS[categoryId];
-  const textColor = TEXT_COLORS[categoryId];
-  if (!data || !bgColor || !textColor) return;
-
-  const isActive = activeCategories.has(categoryId);
-
-  // Toggle experiential learning rectangles
-  data.learning.forEach(id => {
-    const activityEl = document.getElementById(`activity-${id}`);
-    if (activityEl) {
-      activityEl.style.display = isActive ? "none" : "block";
-      activityEl.style.backgroundColor = isActive ? "#E9E9E9" : bgColor;
-      activityEl.style.color = "black";
-    }
-  });
-
-  // Toggle assessment rectangles
-  data.assessment.forEach(id => {
-    const assessmentEl = document.getElementById(`assessment-${id}`);
-    if (assessmentEl) {
-      assessmentEl.style.display = isActive ? "none" : "block";
-      assessmentEl.style.color = isActive ? "black" : textColor;
-      assessmentEl.style.fontWeight = isActive ? "normal" : "bold";
-      assessmentEl.style.borderColor = isActive ? "white" : textColor;
-    }
-  });
-
-  // Track active category
-  if (isActive) {
-    activeCategories.delete(categoryId);
-  } else {
-    activeCategories.add(categoryId);
-  }
+function showElement(element, visible) {
+  element.style.display = visible ? "flex" : "none";
 }
 
+function renderSelection() {
+  const hasSelection = activeCategories.size > 0;
+  const visibleActivities = new Set();
+  const visibleAssessments = new Set();
 
+  categoryButtons.forEach(button => {
+    const categoryId = Number(button.dataset.categoryId);
+    const selected = activeCategories.has(categoryId);
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
 
+  if (hasSelection) {
+    activeCategories.forEach(categoryId => {
+      const data = CATEGORY_DATA[categoryId];
+      data.learning.forEach(id => {
+        visibleActivities.add(id);
+        const element = document.getElementById(`activity-${id}`);
+        if (element) {
+          element.style.backgroundColor = RECTANGLE_COLORS[categoryId];
+          element.style.borderLeftColor = TEXT_COLORS[categoryId];
+        }
+      });
+      data.assessment.forEach(id => {
+        visibleAssessments.add(id);
+        const element = document.getElementById(`assessment-${id}`);
+        if (element) {
+          element.style.color = TEXT_COLORS[categoryId];
+          element.style.borderLeftColor = TEXT_COLORS[categoryId];
+          element.style.fontWeight = "600";
+        }
+      });
+    });
+  }
 
+  activityElements.forEach(element => {
+    const id = Number(element.id.replace("activity-", ""));
+    showElement(element, !hasSelection || visibleActivities.has(id));
+    if (!hasSelection) {
+      element.style.backgroundColor = "";
+      element.style.borderLeftColor = "";
+    }
+  });
 
+  assessmentElements.forEach(element => {
+    const id = Number(element.id.replace("assessment-", ""));
+    showElement(element, !hasSelection || visibleAssessments.has(id));
+    if (!hasSelection) {
+      element.style.color = "";
+      element.style.borderLeftColor = "";
+      element.style.fontWeight = "";
+    }
+  });
 
+  activityCount.textContent = hasSelection ? visibleActivities.size : activityElements.length;
+  assessmentCount.textContent = hasSelection ? visibleAssessments.size : assessmentElements.length;
 
+  if (!hasSelection) {
+    selectionSummary.textContent = "Showing all recommendations";
+    return;
+  }
 
+  const selectedNames = categoryButtons
+    .filter(button => activeCategories.has(Number(button.dataset.categoryId)))
+    .map(button => button.querySelector(".category-name").textContent);
+  selectionSummary.textContent = `${activeCategories.size} selected · ${selectedNames.join(" + ")}`;
+}
 
-// Attach click handlers to category icons
-document.querySelectorAll(".category-icon .main-icon").forEach(img => {
-  const parentIcon = img.closest(".category-icon");
-  const categoryId = parseInt(parentIcon.dataset.categoryId); // Get ID from HTML
-
-  img.addEventListener("click", () => {
-    const isSelected = parentIcon.classList.contains("selected");
+categoryButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const categoryId = Number(button.dataset.categoryId);
+    const isSelected = activeCategories.has(categoryId);
 
     if (!multiSelectEnabled) {
-      // SINGLE SELECT
-      document.querySelectorAll(".category-icon").forEach(i => i.classList.remove("selected"));
-      document.querySelectorAll('.rectangle.grey').forEach(rect => {
-        rect.style.backgroundColor = "#E9E9E9";
-        rect.style.color = "black";
-        rect.style.display = "none";
-      });
-
-      document.querySelectorAll('.rectangle.white').forEach(rect => {
-        rect.style.color = "black";
-        rect.style.fontWeight = "normal";
-        rect.style.borderColor = "white";
-        rect.style.display = "none";
-      });
-
       activeCategories.clear();
-
-      if (!isSelected) {
-        parentIcon.classList.add("selected");
-        toggleCategory(categoryId);
-      }
-
+      if (!isSelected) activeCategories.add(categoryId);
+    } else if (isSelected) {
+      activeCategories.delete(categoryId);
     } else {
-      // MULTI SELECT
-      parentIcon.classList.toggle("selected");
-      toggleCategory(categoryId);
+      activeCategories.add(categoryId);
     }
+
+    renderSelection();
   });
 });
 
+toggle.addEventListener("change", () => {
+  multiSelectEnabled = toggle.checked;
+  modeLabel.textContent = multiSelectEnabled ? "Multiple attributes enabled" : "One attribute at a time";
 
+  if (!multiSelectEnabled && activeCategories.size > 1) {
+    const firstSelection = activeCategories.values().next().value;
+    activeCategories.clear();
+    activeCategories.add(firstSelection);
+    renderSelection();
+  }
+});
 
-const canvas = document.getElementById('connectionCanvas');
-      const ctx = canvas.getContext('2d');
+clearSelectionButton.addEventListener("click", () => {
+  activeCategories.clear();
+  renderSelection();
+});
 
-      function resizeCanvas() {
-        canvas.width = document.body.scrollWidth;
-        canvas.height = document.body.scrollHeight;
-      }
-
-      window.addEventListener('resize', resizeCanvas);
-      window.addEventListener('load', () => {
-        resizeCanvas();
-
-        
-      });
-
-
-//Linking activities
-
-
-  document.querySelectorAll('.rectangle.grey').forEach(rect => {
-    rect.addEventListener('click', () => {
-      // Remove selection from all rectangles
-      document.querySelectorAll('.rectangle.grey').forEach(el => el.classList.remove('selected'));
-
-      // Add selection to the clicked one
-      rect.classList.add('selected');
-
-      // Log to confirm click
-      console.log('Selected:', rect.id);
-    });
-  });
-
+renderSelection();
 
 //Activities data
 // Popup elements
@@ -244,6 +231,8 @@ const popupDownloable = document.getElementById('popup-downloable');
 const popupImage = document.getElementById('popup-image');
 const closeBtn = document.getElementById('close');
 const popupBanner = document.getElementById('popup-banner');
+const popupResourceSection = document.querySelector('.popup-bottom');
+let lastFocusedElement = null;
 
 
 // If you want custom text per activity:
@@ -427,69 +416,57 @@ const ACTIVITY_COLORS = {
 
 };
 
-//LOGIC FOR THE POPUP
-// Make grey rectangles clickable and show popup
-document.querySelectorAll('.rectangle.grey').forEach(rect => {
-  rect.addEventListener('click', () => {
-    // visual selection (optional)
-    document.querySelectorAll('.rectangle.grey').forEach(el => el.classList.remove('selected'));
-    rect.classList.add('selected');
-
-    // Show the rectangle’s own text at the very top
-    popupActivity.textContent = rect.textContent.trim();
-
-    // Banner color
-    
-    popupBanner.src = ACTIVITY_BANNERS[rect.id] || "";
-    popupBanner.style.display = popupBanner.src ? "block" : "none";
-    
-    // Title color based on learning activity activity
-    popupActivity.style.color = ACTIVITY_COLORS[rect.id] || "#000000"; // DEFAULT BLACK
-
-    // Title case study color based on learning activity activity
-    popupCaseStudy.style.color = ACTIVITY_COLORS[rect.id] || "#000000"; // DEFAULT BLACK
-
-    // Title downloable color based on learning activity activity
-    popupDownloable.style.color = ACTIVITY_COLORS[rect.id] || "#000000"; // DEFAULT BLACK
-
-    // Popup Border color
-    popup.style.border = ACTIVITY_COLORS[rect.id]
-
-     // Case study image based on learning activity
-    popupImage.src = ACTIVITY_IMAGES[rect.id] || ""; // EMPTY IF NO IMAGE
-    popupImage.style.display = popupImage.src ? "block" : "none"; // HIDE IF NO IMAGE
-
-    
-
-    // UPDATE DOWNLOAD LINK AND TEXT
-    if(ACTIVITY_DOWNLOADS[rect.id]) {
-      popupTemplateLink.href = ACTIVITY_DOWNLOADS[rect.id].url;
-      popupTemplateLink.textContent = ACTIVITY_DOWNLOADS[rect.id].text;
-    } else {
-      popupTemplateLink.href = "#"; 
-      popupTemplateLink.textContent = "Download Template";
-    }
-
-
-
-    popup.style.display = 'block';
-  });
-});
-
-// Close popup
-if (closeBtn) {
-  closeBtn.addEventListener('click', () => {
-    popup.style.display = 'none';
-  });
+// Activity resource dialog
+function closePopup() {
+  popup.hidden = true;
+  document.body.classList.remove("modal-open");
+  if (lastFocusedElement) lastFocusedElement.focus();
 }
 
-// Close popup when clicking outside of it
-window.addEventListener('click', function(event) {
-  const isInsidePopup = popup.contains(event.target);
-  const isActivityRect = event.target.closest('.rectangle.grey');
+document.querySelectorAll('.rectangle.grey').forEach(rect => {
+  rect.setAttribute("role", "button");
+  rect.setAttribute("tabindex", "0");
 
-  if (popup.style.display === 'block' && !isInsidePopup && !isActivityRect) {
-    popup.style.display = 'none';
-  }
+  const openPopup = () => {
+    document.querySelectorAll('.rectangle.grey').forEach(element => element.classList.remove('selected'));
+    rect.classList.add('selected');
+    popupActivity.textContent = rect.textContent.trim();
+
+    popupBanner.src = ACTIVITY_BANNERS[rect.id] || "";
+    popupBanner.style.display = popupBanner.src ? "block" : "none";
+
+    popupImage.src = ACTIVITY_IMAGES[rect.id] || "";
+    popupImage.style.display = popupImage.src ? "block" : "none";
+    popupCaseStudy.style.display = popupImage.src ? "block" : "none";
+
+    if (ACTIVITY_DOWNLOADS[rect.id]) {
+      popupTemplateLink.href = ACTIVITY_DOWNLOADS[rect.id].url;
+      popupTemplateLink.textContent = ACTIVITY_DOWNLOADS[rect.id].text;
+      popupResourceSection.hidden = false;
+    } else {
+      popupTemplateLink.removeAttribute("href");
+      popupResourceSection.hidden = true;
+    }
+
+    lastFocusedElement = document.activeElement;
+    popup.hidden = false;
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+  };
+
+  rect.addEventListener('click', openPopup);
+  rect.addEventListener('keydown', event => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openPopup();
+    }
+  });
 });
 
+closeBtn.addEventListener('click', closePopup);
+popup.addEventListener('click', event => {
+  if (event.target === popup) closePopup();
+});
+window.addEventListener('keydown', event => {
+  if (event.key === "Escape" && !popup.hidden) closePopup();
+});
