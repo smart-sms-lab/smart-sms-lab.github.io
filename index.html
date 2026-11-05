@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="/script.js" defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#081a2f" />
+    <meta name="description" content="Map engineering graduate attributes to experiential learning activities and assessment methods." />
+    <title>Graduate Attribute Curriculum Mapper</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-grid"></div>
+      <div class="header-inner">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M8 35.5 24 7l16 28.5H8Z"></path>
+            <circle cx="24" cy="28" r="7"></circle>
+          </svg>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Engineering education toolkit</p>
+          <h1>Graduate Attribute<br><span>Curriculum Mapper</span></h1>
+          <p class="hero-description">Connect accreditation outcomes with practical learning experiences and evidence-based assessment methods.</p>
+          <div class="hero-metrics" aria-label="Toolkit summary">
+            <span><strong>12</strong> graduate attributes</span>
+            <span><strong>36</strong> learning activities</span>
+            <span><strong>36</strong> assessment methods</span>
+          </div>
+        </div>
+        <div class="contact-card">
+          <span class="contact-label">Developed by Smart Lab</span>
+          <a href="mailto:Rafiq.ahmad@ualberta.ca">Rafiq.ahmad@ualberta.ca</a>
+          <a href="https://rafiqahmads.com/" target="_blank" rel="noopener">Visit project website <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="attribute-section" aria-labelledby="attribute-heading">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Step 01 · Define outcomes</p>
+            <h2 id="attribute-heading">Choose graduate attributes</h2>
+            <p>Select an attribute to reveal aligned activities and assessments. Enable comparison mode to explore multiple outcomes together.</p>
+          </div>
+          <div class="selection-controls">
+            <label class="mode-control" for="multiSelectToggle">
+              <span class="switch">
+                <input type="checkbox" id="multiSelectToggle">
+                <span class="slider"></span>
+              </span>
+              <span>
+                <strong>Comparison mode</strong>
+                <small id="modeLabel">One attribute at a time</small>
+              </span>
+            </label>
+            <button class="clear-button" id="clearSelection" type="button">Clear selection</button>
+          </div>
+        </div>
+
+        <div class="category-grid" role="group" aria-label="Graduate attributes">
+          <button class="category-icon" type="button" data-category-id="1" aria-pressed="false"><span class="category-number">GA 01</span><span class="category-name">Knowledge base for engineering</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="2" aria-pressed="false"><span class="category-number">GA 02</span><span class="category-name">Problem analysis</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="3" aria-pressed="false"><span class="category-number">GA 03</span><span class="category-name">Investigation</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="4" aria-pressed="false"><span class="category-number">GA 04</span><span class="category-name">Design</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="5" aria-pressed="false"><span class="category-number">GA 05</span><span class="category-name">Use of engineering tools</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="6" aria-pressed="false"><span class="category-number">GA 06</span><span class="category-name">Individual and teamwork</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="7" aria-pressed="false"><span class="category-number">GA 07</span><span class="category-name">Communication skills</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="8" aria-pressed="false"><span class="category-number">GA 08</span><span class="category-name">Professionalism</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="9" aria-pressed="false"><span class="category-number">GA 09</span><span class="category-name">Impact on society and environment</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="10" aria-pressed="false"><span class="category-number">GA 10</span><span class="category-name">Ethics and equity</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="11" aria-pressed="false"><span class="category-number">GA 11</span><span class="category-name">Economics and project management</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+          <button class="category-icon" type="button" data-category-id="12" aria-pressed="false"><span class="category-number">GA 12</span><span class="category-name">Lifelong learning</span><span class="category-arrow" aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+
+      <section class="workspace-section" aria-labelledby="workspace-heading">
+        <div class="workspace-heading">
+          <div>
+            <p class="section-kicker">Step 02 · Build alignment</p>
+            <h2 id="workspace-heading">Curriculum alignment workspace</h2>
+          </div>
+          <div class="selection-summary" id="selectionSummary" aria-live="polite">Showing all recommendations</div>
+        </div>
+
+        <!-- Grid container for both sides -->
+    <div class="mindmap-container">
+ 
+      
+      <div class="activity-grid left">
+         <div class="grid-title">
+           <span class="grid-icon" aria-hidden="true">01</span>
+           <span><small>TEACHING STRATEGIES</small>Experiential learning activities</span>
+           <span class="result-count" id="activityCount">36</span>
+         </div>
+        
+        <!-- 12 columns x 3 rows = 36 items -->
+        <!-- Generate 36 grey rectangles -->
+         
+   
+
+        
+        <div class="rectangle grey" id="activity-1">Hands-on lab experiments in thermodynamics, fluid mechanics, among others</div>
+        <div class="rectangle grey" id="activity-2">Capstone design projects to develop and prototype mechanical systems</div>
+        <div class="rectangle grey" id="activity-3">Technical writing assignments</div>
+        <div class="rectangle grey" id="activity-4">Virtual or augmented reality simulations of engineering processes</div>
+        <div class="rectangle grey" id="activity-5">3D printing and CAD-based design challenges</div>
+        <div class="rectangle grey" id="activity-6">Engineering pitch competitions</div>
+        <div class="rectangle grey" id="activity-7">Reverse engineering projects to disassemble and analyze mechanical systems</div>
+        <div class="rectangle grey" id="activity-8">Human-centered design workshops for assistive devices</div>
+        <div class="rectangle grey" id="activity-9">Group discussions and debates on emerging mechanical engineering topics</div>
+        <div class="rectangle grey" id="activity-10">Case studies where students analyze real-world engineering failures</div>
+        <div class="rectangle grey" id="activity-11">Hands-on training with CAD and FEA</div>
+        <div class="rectangle grey" id="activity-12">Ethics case study analysis on engineering failures and dilemmas</div>
+        <div class="rectangle grey" id="activity-13">Open-ended problem-solving workshops</div>
+        <div class="rectangle grey" id="activity-14">CNC machining and robotics lab exercises</div>
+        <div class="rectangle grey" id="activity-15">Professional engineering society memberships and networking events</div>
+        <div class="rectangle grey" id="activity-16">Computational modeling and simulation exercises</div>
+        <div class="rectangle grey" id="activity-17">Sensor integration and IoT-based mechanical system monitoring</div>
+        <div class="rectangle grey" id="activity-18">Guest lectures from practicing engineers on ethical challenges</div>
+        <div class="rectangle grey" id="activity-19">Research projects requiring data collection and statistical analysis</div>
+        <div class="rectangle grey" id="activity-20">Multidisciplinary team projects on designing/ fabricating mechanical components</div>
+        <div class="rectangle grey" id="activity-21">Life cycle analysis of a product’s sustainability</div>
+        <div class="rectangle grey" id="activity-22">Failure analysis of mechanical components</div>
+        <div class="rectangle grey" id="activity-23">Industry-based internships or cooperative education (co-op)</div>
+        <div class="rectangle grey" id="activity-24">Design projects focused on renewable energy or low-impact materials</div>
+        <div class="rectangle grey" id="activity-25">Experimental validation of simulation models</div>
+        <div class="rectangle grey" id="activity-26">Hackathons or engineering competitions</div>
+        <div class="rectangle grey" id="activity-27">Experimental validation of simulation models</div>
+        <div class="rectangle grey" id="activity-28">Inclusive design challenges</div>
+        <div class="rectangle grey" id="activity-29">Cost estimation and budgeting exercises</div>
+        <div class="rectangle grey" id="activity-30">Self-directed learning modules</div>
+        <div class="rectangle grey" id="activity-31">Role-playing ethical decision-making</div>
+        <div class="rectangle grey" id="activity-32">Engineering entrepreneurship workshops</div>
+        <div class="rectangle grey" id="activity-33">Students-led workshops</div>
+        <div class="rectangle grey" id="activity-34">Group discussions in engineering workplaces</div>
+        <div class="rectangle grey" id="activity-35">From concept to execution projects</div>
+        <div class="rectangle grey" id="activity-36">Participation in professional development programs and conferences</div>
+      </div>
+
+      <!-- Assessment Methods (Right Side) -->
+      <div class="activity-grid right">
+        <div class="grid-title">
+          <span class="grid-icon" aria-hidden="true">02</span>
+          <span><small>EVIDENCE OF LEARNING</small>Assessment methods</span>
+          <span class="result-count" id="assessmentCount">36</span>
+        </div>
+        <!-- 12 columns x 3 rows = 36 items -->
+        <!-- Generate 36 white rectangles -->
+        <div class="rectangle white" id="assessment-1">Concept tests and quizzes</div>
+        <div class="rectangle white" id="assessment-2">Practical lab exams using engineering software</div>
+        <div class="rectangle white" id="assessment-3">Evaluation of sustainability reports</div>
+        <div class="rectangle white" id="assessment-4">Lab reports and technical write-ups</div>
+        <div class="rectangle white" id="assessment-5">Digital portfolios showcasing tool usage</div>
+        <div class="rectangle white" id="assessment-6">Public outreach project presentations</div>
+        <div class="rectangle white" id="assessment-7">Oral or poster presentations explaining scientific principles</div>
+        <div class="rectangle white" id="assessment-8">Peer reviews of tool implementation in projects</div>
+        <div class="rectangle white" id="assessment-9">Research papers on environmental impact</div>
+        <div class="rectangle white" id="assessment-10">Graded reports analyzing problem solutions</div>
+        <div class="rectangle white" id="assessment-11">Peer and self-assessment using teamwork rubrics</div>
+        <div class="rectangle white" id="assessment-12">Ethical dilemma resolution essays</div>
+        <div class="rectangle white" id="assessment-13">Peer evaluation of problem-solving approaches</div>
+        <div class="rectangle white" id="assessment-14">Industry supervisor feedback</div>
+        <div class="rectangle white" id="assessment-15">Peer discussions and reflections</div>
+        <div class="rectangle white" id="assessment-16">Peer evaluation of problem-solving approaches</div>
+        <div class="rectangle white" id="assessment-17">Team project reflections and individual contributions</div>
+        <div class="rectangle white" id="assessment-18">Equity-focused project assessment</div>
+        <div class="rectangle white" id="assessment-19">Research reports with data interpretation</div>
+        <div class="rectangle white" id="assessment-20">Presentation scoring based on: clarity, engagement and technical accuracy</div>
+        <div class="rectangle white" id="assessment-21">Business model or financial evaluation</div>
+        <div class="rectangle white" id="assessment-22">Evaluation of experimental design and methodology</div>
+        <div class="rectangle white" id="assessment-23">Rubrics evaluating technical documentation</div>
+        <div class="rectangle white" id="assessment-24">Performance in simulation-based project management scenarios</div>
+        <div class="rectangle white" id="assessment-25">Lab performance assessment</div>
+        <div class="rectangle white" id="assessment-26">Feedback from industry judges or faculty</div>
+        <div class="rectangle white" id="assessment-27">Industry panel feedback on project feasibility</div>
+        <div class="rectangle white" id="assessment-28">Evaluation of design reports and CAD models</div>
+        <div class="rectangle white" id="assessment-29">Written reflections on professional conduct</div>
+        <div class="rectangle white" id="assessment-30">Learning journals documenting skill development</div>
+        <div class="rectangle white" id="assessment-31">Functional prototype demonstrations</div>
+        <div class="rectangle white" id="assessment-32">Ethics-based role-playing assessments</div>
+        <div class="rectangle white" id="assessment-33">Certification completion records</div>
+        <div class="rectangle white" id="assessment-34">Rubrics assessing: innovation, feasibility and sustainability</div>
+        <div class="rectangle white" id="assessment-35">Peer and faculty evaluations in professional settings</div>
+        <div class="rectangle white" id="assessment-36">Personal learning plans with faculty feedback</div>
+      </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popup-activity" hidden>
+      <div class="popup-content">
+        <button id="close" class="close-button" type="button" aria-label="Close case study">×</button>
+        <img id="popup-banner" src="" alt="">
+        <div class="popup-top">
+          <p class="modal-kicker">Learning activity resource</p>
+          <h2 id="popup-activity"></h2>
+          <h3 id="popup-case-study">Case study</h3>
+          <img id="popup-image" src="" alt="Case study preview">
+        </div>
+        <div class="popup-bottom">
+          <div>
+            <span class="resource-icon" aria-hidden="true">↓</span>
+            <span><small>FACULTY RESOURCE</small><strong id="popup-downloable">Downloadable template</strong></span>
+          </div>
+          <a id="popup-template-link" class="resource-link" href="#" target="_blank" rel="noopener">Open template <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
