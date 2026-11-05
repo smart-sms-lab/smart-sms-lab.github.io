@@ -378,6 +378,9 @@ input:checked + .slider::before {
   text-align: left;
   cursor: pointer;
   transition: transform .2s ease, background .2s ease, color .2s ease;
+
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .category-icon:nth-child(2) { --category: #0089b5; }
@@ -391,6 +394,150 @@ input:checked + .slider::before {
 .category-icon:nth-child(10) { --category: #7134a3; }
 .category-icon:nth-child(11) { --category: #a13c7a; }
 .category-icon:nth-child(12) { --category: #af376f; }
+
+/* ==========================================
+   GRADUATE ATTRIBUTE FLOATING PREVIEW
+========================================== */
+
+.ga-hover-preview {
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -46%) scale(0.97);
+
+  width: min(1050px, calc(100vw - 60px));
+
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+
+  background: #ffffff;
+
+  border: 1px solid #dce4ee;
+
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.30);
+
+  z-index: 9999;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s ease;
+}
+
+/* Make popup visible */
+.ga-hover-preview.is-visible {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Preview image */
+.ga-preview-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+
+  background: #f4f7fa;
+  overflow: hidden;
+}
+
+.ga-preview-image-container img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-height: 520px;
+
+  object-fit: contain;
+}
+
+/* Description panel */
+.ga-preview-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 45px;
+
+  background: #ffffff;
+}
+
+#ga-preview-number {
+  color: #1769e0;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+
+  margin-bottom: 16px;
+}
+
+#ga-preview-title {
+  margin: 0 0 20px;
+
+  color: #102a46;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  line-height: 1.2;
+}
+
+#ga-preview-description {
+  margin: 0;
+
+  color: #526277;
+
+  font-size: 15px;
+
+  line-height: 1.8;
+}
+
+/* Responsive preview */
+@media (max-width: 780px) {
+
+  .ga-hover-preview {
+    grid-template-columns: 1fr;
+
+    width: calc(100vw - 32px);
+
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .ga-preview-image-container img {
+    max-height: 300px;
+  }
+
+  .ga-preview-content {
+    padding: 25px;
+  }
+
+  #ga-preview-title {
+    font-size: 23px;
+  }
+
+}
+
+/* ==========================================
+   GRADUATE ATTRIBUTE FLOATING PREVIEW
+========================================== */
 
 .category-icon::after {
   content: "";

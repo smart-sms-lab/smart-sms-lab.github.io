@@ -113,6 +113,123 @@ const categoryButtons = [...document.querySelectorAll(".category-icon")];
 const activityElements = [...document.querySelectorAll(".rectangle.grey")];
 const assessmentElements = [...document.querySelectorAll(".rectangle.white")];
 
+// ==========================================
+// GRADUATE ATTRIBUTE FLOATING HOVER PREVIEW
+// ==========================================
+
+const CATEGORY_HOVER_DATA = {
+  1: {
+    image: "Images/ga1-hover.png",
+    title: "Knowledge Base for Engineering",
+    description: "Apply knowledge of mathematics, natural sciences, engineering fundamentals, and specialized engineering knowledge to solve complex engineering problems."
+  },
+  2: {
+    image: "Images/ga2-hover.png",
+    title: "Problem Analysis",
+    description: "Identify, formulate, analyze, and solve complex engineering problems using engineering principles and analytical methods."
+  },
+  3: {
+    image: "Images/ga3-hover.png",
+    title: "Investigation",
+    description: "Investigate complex problems through research, experimentation, data analysis, and interpretation of results."
+  },
+  4: {
+    image: "Images/ga4-hover.png",
+    title: "Design",
+    description: "Design solutions for complex engineering problems while considering public health, safety, environmental, and societal factors."
+  },
+  5: {
+    image: "Images/ga5-hover.png",
+    title: "Use of Engineering Tools",
+    description: "Create, select, apply, and adapt appropriate engineering techniques, resources, and modern engineering tools."
+  },
+  6: {
+    image: "Images/ga6-hover.png",
+    title: "Individual and Teamwork",
+    description: "Work effectively as an individual and as a member or leader of diverse teams in multidisciplinary environments."
+  },
+  7: {
+    image: "Images/ga7-hover.png",
+    title: "Communication Skills",
+    description: "Communicate complex engineering concepts effectively with technical and non-technical audiences."
+  },
+  8: {
+    image: "Images/ga8-hover.png",
+    title: "Professionalism",
+    description: "Demonstrate professional responsibilities, ethical conduct, accountability, and an understanding of engineering practice."
+  },
+  9: {
+    image: "Images/ga9-hover.png",
+    title: "Impact on Society and Environment",
+    description: "Understand the societal, environmental, and sustainability impacts of engineering activities and solutions."
+  },
+  10: {
+    image: "Images/ga10-hover.png",
+    title: "Ethics and Equity",
+    description: "Apply ethical principles and demonstrate respect for equity, diversity, inclusion, and the public interest."
+  },
+  11: {
+    image: "Images/ga11-hover.png",
+    title: "Economics and Project Management",
+    description: "Apply economic principles and project management concepts to plan, organize, and deliver engineering projects."
+  },
+  12: {
+    image: "Images/ga12-hover.png",
+    title: "Lifelong Learning",
+    description: "Recognize the need for independent, continuous learning and adapt to emerging technologies and developments in engineering."
+  }
+};
+
+// Get floating preview elements
+const gaPreview = document.getElementById("ga-hover-preview");
+const gaPreviewImage = document.getElementById("ga-preview-image");
+const gaPreviewNumber = document.getElementById("ga-preview-number");
+const gaPreviewTitle = document.getElementById("ga-preview-title");
+const gaPreviewDescription = document.getElementById("ga-preview-description");
+
+// Show floating preview
+function showGAPreview(categoryId) {
+  const data = CATEGORY_HOVER_DATA[categoryId];
+
+  if (!data) return;
+
+  gaPreviewImage.src = data.image;
+  gaPreviewImage.alt = data.title;
+
+  gaPreviewNumber.textContent =
+    `GRADUATE ATTRIBUTE ${String(categoryId).padStart(2, "0")}`;
+
+  gaPreviewTitle.textContent = data.title;
+  gaPreviewDescription.textContent = data.description;
+
+  gaPreview.classList.add("is-visible");
+}
+
+// Hide floating preview
+function hideGAPreview() {
+  gaPreview.classList.remove("is-visible");
+}
+
+// Attach hover and keyboard events
+categoryButtons.forEach(button => {
+  const categoryId = Number(button.dataset.categoryId);
+
+  button.addEventListener("mouseenter", () => {
+    showGAPreview(categoryId);
+  });
+
+  button.addEventListener("mouseleave", hideGAPreview);
+
+  button.addEventListener("focus", () => {
+    showGAPreview(categoryId);
+  });
+
+  button.addEventListener("blur", hideGAPreview);
+});
+
+
+
+
 function showElement(element, visible) {
   element.style.display = visible ? "flex" : "none";
 }
