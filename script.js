@@ -136,47 +136,47 @@ const CATEGORY_HOVER_DATA = {
   4: {
     image: "Images/ga4-hover.png",
     title: "Design",
-    description: "Design solutions for complex engineering problems while considering public health, safety, environmental, and societal factors."
+    description: " The ability to perform engineering design. Engineering design is a process of making informed decisions to creatively devise products, systems, components, or processes to meet specified goals based on engineering analysis and judgement."
   },
   5: {
     image: "Images/ga5-hover.png",
     title: "Use of Engineering Tools",
-    description: "Create, select, apply, and adapt appropriate engineering techniques, resources, and modern engineering tools."
+    description: "An ability to create, select, apply, and adapt appropriate techniques, resources, and modern engineering tools to a range of engineering activities from simple to complex."
   },
   6: {
     image: "Images/ga6-hover.png",
     title: "Individual and Teamwork",
-    description: "Work effectively as an individual and as a member or leader of diverse teams in multidisciplinary environments."
+    description: "An ability to work effectively as a member and leader in teams, preferably in a multi-disciplinary setting."
   },
   7: {
     image: "Images/ga7-hover.png",
     title: "Communication Skills",
-    description: "Communicate complex engineering concepts effectively with technical and non-technical audiences."
+    description: "An ability to communicate complex engineering concepts within the profession and with society at large, including ability to comprehend and write effective reports and design documentation, and to give and effectively respond to clear instructions."
   },
   8: {
     image: "Images/ga8-hover.png",
     title: "Professionalism",
-    description: "Demonstrate professional responsibilities, ethical conduct, accountability, and an understanding of engineering practice."
+    description: "An understanding of the roles and responsibilities of the professional engineer in society, especially the primary role of protection of the public and the public interest."
   },
   9: {
     image: "Images/ga9-hover.png",
     title: "Impact on Society and Environment",
-    description: "Understand the societal, environmental, and sustainability impacts of engineering activities and solutions."
+    description: "An ability to analyze social and environmental aspects of engineering activities. Such ability includes an understanding of the concepts of sustainable design."
   },
   10: {
     image: "Images/ga10-hover.png",
     title: "Ethics and Equity",
-    description: "Apply ethical principles and demonstrate respect for equity, diversity, inclusion, and the public interest."
+    description: "An ability to apply professional ethics, accountability, and equity."
   },
   11: {
     image: "Images/ga11-hover.png",
     title: "Economics and Project Management",
-    description: "Apply economic principles and project management concepts to plan, organize, and deliver engineering projects."
+    description: "An ability to appropriately incorporate economics and business practices including project, risk, and change management into the practice of engineering and to understand their limitations."
   },
   12: {
     image: "Images/ga12-hover.png",
     title: "Lifelong Learning",
-    description: "Recognize the need for independent, continuous learning and adapt to emerging technologies and developments in engineering."
+    description: "An ability to identify and to address their own educational needs in a changing world in ways sufficient to maintain their competence and to allow them to contribute to the advancement of knowledge."
   }
 };
 
