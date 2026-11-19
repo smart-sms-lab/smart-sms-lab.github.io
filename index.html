@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#081a2f" />
     <meta name="description" content="Map engineering graduate attributes to experiential learning activities and assessment methods." />
-    <title>Graduate Attribute Curriculum Mapper</title>
+    <title>Experiential Learning Compass</title>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
@@ -21,10 +21,11 @@
         </div>
         <div class="hero-copy">
           <p class="eyebrow">Engineering education toolkit</p>
-          <h1>Graduate Attribute<br><span>Curriculum Mapper</span></h1>
-          <p class="hero-description">Connect accreditation outcomes with practical learning experiences and evidence-based assessment methods.</p>
+          <h1>Experiential<br><span>Learning Compass</span></h1>
+          <p class="hero-description">Connect graduate attributes and program learning outcomes with practical learning experiences and evidence-based assessment methods.</p>
           <div class="hero-metrics" aria-label="Toolkit summary">
             <span><strong>12</strong> graduate attributes</span>
+            <span><strong>37</strong> program learning outcomes</span>
             <span><strong>36</strong> learning activities</span>
             <span><strong>36</strong> assessment methods</span>
           </div>
@@ -74,6 +75,22 @@
           <button class="category-icon" type="button" data-category-id="11" aria-pressed="false"><span class="category-number">GA 11</span><span class="category-name">Economics and project management</span><span class="category-arrow" aria-hidden="true">↗</span></button>
           <button class="category-icon" type="button" data-category-id="12" aria-pressed="false"><span class="category-number">GA 12</span><span class="category-name">Lifelong learning</span><span class="category-arrow" aria-hidden="true">↗</span></button>
         </div>
+
+        <div class="plo-explorer" aria-labelledby="plo-heading">
+          <div class="plo-explorer-heading">
+            <div>
+              <p class="section-kicker">Step 01B · Refine outcomes</p>
+              <h3 id="plo-heading">Program Learning Outcomes</h3>
+              <p>Select one or more PLOs to refine the activities and assessment evidence shown below.</p>
+            </div>
+            <div class="plo-selection-summary" id="ploSelectionSummary" aria-live="polite">Choose a graduate attribute to view its PLOs</div>
+          </div>
+          <div class="plo-empty" id="ploEmpty">
+            <span aria-hidden="true">↳</span>
+            <p><strong>Start with a graduate attribute.</strong> Its mapped Program Learning Outcomes will appear here.</p>
+          </div>
+          <div class="plo-groups" id="ploGroups" hidden></div>
+        </div>
       </section>
 
       <section class="workspace-section" aria-labelledby="workspace-heading">
@@ -92,7 +109,7 @@
       <div class="activity-grid left">
          <div class="grid-title">
            <span class="grid-icon" aria-hidden="true">01</span>
-           <span><small>TEACHING STRATEGIES</small>Experiential learning activities</span>
+           <span><small>TEACHING STRATEGIES</small>Experiential learning activities<em class="grid-helper">Select an activity to open its faculty resources</em></span>
            <span class="result-count" id="activityCount">36</span>
          </div>
         
@@ -144,7 +161,7 @@
       <div class="activity-grid right">
         <div class="grid-title">
           <span class="grid-icon" aria-hidden="true">02</span>
-          <span><small>EVIDENCE OF LEARNING</small>Assessment methods</span>
+          <span><small>EVIDENCE OF LEARNING</small>Assessment methods<em class="grid-helper">Select a method to open its assessment guide and templates</em></span>
           <span class="result-count" id="assessmentCount">36</span>
         </div>
         <!-- 12 columns x 3 rows = 36 items -->
@@ -192,49 +209,124 @@
 
     <div id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popup-activity" hidden>
       <div class="popup-content">
-        <button id="close" class="close-button" type="button" aria-label="Close case study">×</button>
-        <img id="popup-banner" src="" alt="">
-        <div class="popup-top">
-          <p class="modal-kicker">Learning activity resource</p>
-          <h2 id="popup-activity"></h2>
-          <h3 id="popup-case-study">Case study</h3>
-          <img id="popup-image" src="" alt="Case study preview">
-        </div>
-        <div class="popup-bottom">
-          <div>
-            <span class="resource-icon" aria-hidden="true">↓</span>
-            <span><small>FACULTY RESOURCE</small><strong id="popup-downloable">Downloadable template</strong></span>
+        <header class="resource-header">
+          <img id="popup-banner" src="" alt="">
+          <div class="resource-header-overlay"></div>
+          <button id="close" class="close-button" type="button" aria-label="Close resource workspace">×</button>
+          <div class="resource-heading">
+            <p class="modal-kicker"><span id="popup-attribute-code">GA 01</span> · <span id="popup-workspace-label">Faculty resource workspace</span></p>
+            <h2 id="popup-activity"></h2>
+            <p id="popup-attribute-name"></p>
+            <div class="popup-plo-list" id="popup-plo-list"></div>
           </div>
-          <a id="popup-template-link" class="resource-link" href="#" target="_blank" rel="noopener">Open template <span aria-hidden="true">↗</span></a>
+        </header>
+
+        <div class="resource-workspace">
+          <nav class="resource-nav" aria-label="Activity resources">
+            <p class="resource-nav-label">Select a resource</p>
+            <button class="resource-nav-button active" type="button" data-resource="overview" aria-selected="true">
+              <span class="resource-nav-icon">01</span>
+              <span><strong id="overview-nav-title">Activity brief</strong><small id="overview-nav-subtitle">Implementation guidance</small></span>
+            </button>
+            <button class="resource-nav-button" type="button" data-resource="cases" aria-selected="false">
+              <span class="resource-nav-icon">02</span>
+              <span><strong id="cases-nav-title">Case studies</strong><small id="cases-nav-subtitle">2 engineering examples</small></span>
+            </button>
+            <button class="resource-nav-button" type="button" data-resource="templates" aria-selected="false">
+              <span class="resource-nav-icon">03</span>
+              <span><strong>Templates</strong><small>Ready-to-use resources</small></span>
+            </button>
+            <div class="resource-nav-tip">
+              <span aria-hidden="true">i</span>
+              <p>Use these resources to adapt the activity to your course context and accreditation evidence.</p>
+            </div>
+          </nav>
+
+          <div class="resource-main">
+            <section class="resource-panel" id="resource-overview" data-panel="overview">
+              <p class="panel-eyebrow" id="overview-eyebrow">Implementation brief</p>
+              <h3 id="overview-title">Bring this activity into your course</h3>
+              <p class="panel-intro" id="activity-objective"></p>
+              <div class="implementation-stats">
+                <div><small>RECOMMENDED FORMAT</small><strong id="recommended-format">Small teams</strong></div>
+                <div><small>SUGGESTED DURATION</small><strong id="suggested-duration">1–2 sessions</strong></div>
+                <div><small>EVIDENCE TYPE</small><strong id="evidence-type">Applied work</strong></div>
+              </div>
+              <div class="implementation-block">
+                <h4>Suggested implementation</h4>
+                <ol class="implementation-steps">
+                  <li><span>01</span><p><strong id="step-1-title">Frame the engineering context</strong><span id="step-1-copy">Introduce the authentic constraint, stakeholder need, and expected graduate attribute.</span></p></li>
+                  <li><span>02</span><p><strong id="step-2-title">Guide active application</strong><span id="step-2-copy">Have students make, test, analyze, or defend an engineering decision using course concepts.</span></p></li>
+                  <li><span>03</span><p><strong id="step-3-title">Capture evidence and reflection</strong><span id="step-3-copy">Collect an artifact and ask students to connect their process to professional practice.</span></p></li>
+                </ol>
+              </div>
+              <div class="aligned-evidence">
+                <h4 id="aligned-evidence-title">Aligned assessment evidence</h4>
+                <div id="aligned-assessments"></div>
+              </div>
+            </section>
+
+            <section class="resource-panel" id="resource-cases" data-panel="cases" hidden>
+              <p class="panel-eyebrow" id="cases-eyebrow">Engineering examples</p>
+              <h3 id="cases-title">Case study library</h3>
+              <p class="panel-intro" id="cases-intro">Select a case study to read the scenario, teaching approach, expected evidence, and discussion prompts.</p>
+              <div id="case-study-list" class="case-study-list"></div>
+              <article id="case-study-reader" class="case-study-reader" hidden>
+                <button id="back-to-cases" class="text-button" type="button">← Back to case studies</button>
+                <div class="case-reader-heading">
+                  <span id="case-study-sector"></span>
+                  <h4 id="case-study-title"></h4>
+                  <p id="case-study-summary"></p>
+                </div>
+                <img id="popup-image" src="" alt="">
+                <div class="case-reader-grid">
+                  <section><small>THE CONTEXT</small><p id="case-study-context"></p></section>
+                  <section><small>THE CHALLENGE</small><p id="case-study-challenge"></p></section>
+                </div>
+                <section class="case-reader-section">
+                  <small>FACULTY APPROACH</small>
+                  <p id="case-study-approach"></p>
+                </section>
+                <section class="case-reader-section">
+                  <small>EXPECTED EVIDENCE</small>
+                  <ul id="case-study-evidence"></ul>
+                </section>
+                <section class="reflection-section">
+                  <small>DISCUSSION &amp; REFLECTION</small>
+                  <ol id="case-study-prompts"></ol>
+                </section>
+              </article>
+            </section>
+
+            <section class="resource-panel" id="resource-templates" data-panel="templates" hidden>
+              <p class="panel-eyebrow">Faculty downloads</p>
+              <h3>Ready-to-use templates</h3>
+              <p class="panel-intro" id="templates-intro">Download and customize these resources for your course, learning management system, or accreditation file.</p>
+              <div class="template-grid">
+                <article class="template-card">
+                  <span class="template-file-type">HTML</span>
+                  <div><small id="planner-type-label">ACTIVITY DESIGN</small><h4 id="planner-title">Faculty planning worksheet</h4><p id="planner-description">Define outcomes, constraints, student tasks, timing, and evidence collection.</p></div>
+                  <button class="download-button" type="button" data-template="planner"><span id="planner-button-label">Download template</span> <span aria-hidden="true">↓</span></button>
+                </article>
+                <article class="template-card">
+                  <span class="template-file-type">HTML</span>
+                  <div><small>ASSESSMENT</small><h4>Graduate attribute rubric</h4><p>A four-level rubric for technical quality, process, evidence, and reflection.</p></div>
+                  <button class="download-button" type="button" data-template="rubric">Download rubric <span aria-hidden="true">↓</span></button>
+                </article>
+                <article class="template-card external-template" id="external-template-card" hidden>
+                  <span class="template-file-type">LINK</span>
+                  <div><small>ADDITIONAL RESOURCE</small><h4 id="external-template-title"></h4><p>Open the existing faculty resource in a new browser tab.</p></div>
+                  <a id="popup-template-link" class="download-button secondary" target="_blank" rel="noopener">Open resource <span aria-hidden="true">↗</span></a>
+                </article>
+              </div>
+              <div class="download-note">
+                <span aria-hidden="true">✓</span>
+                <p><strong>Editable and reusable.</strong> Downloaded HTML templates open in any browser and can be printed, saved as PDF, or edited in a document editor.</p>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </div>
   </body>
-
-  <!-- Graduate Attribute Floating Preview -->
-<div id="ga-hover-preview" class="ga-hover-preview">
-
-  <div class="ga-preview-image-container">
-    <img
-      id="ga-preview-image"
-      src=""
-      alt=""
-    />
-  </div>
-
-  <div class="ga-preview-content">
-
-    <span id="ga-preview-number">
-      GRADUATE ATTRIBUTE
-    </span>
-
-    <h2 id="ga-preview-title"></h2>
-
-    <p id="ga-preview-description"></p>
-
-  </div>
-
-</div>
-
 </html>
-
