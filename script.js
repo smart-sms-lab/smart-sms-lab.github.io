@@ -74,6 +74,9 @@ const CATEGORY_DATA = {
  
 };
 
+// This is the list of Program Learning Outcomes (PLOs) for each Graduate Attribute.
+// Each PLO has a code, a title, and the activity/assessment numbers related to it.
+
 const PLO_DATA = {
   1: [
     { code: "1.1", title: "Apply Foundational Knowledge in Engineering Contexts", learning: [1], assessment: [1] },
@@ -140,6 +143,7 @@ const PLO_DATA = {
 
 
 // Background color for learning rectangles (per category)
+
 const RECTANGLE_COLORS = {
   1: "#B9D0F5", // Light blue
   2: "#B7E4F3", // Aqua
@@ -181,10 +185,12 @@ const categoryButtons = [...document.querySelectorAll(".category-icon")];
 const activityElements = [...document.querySelectorAll(".rectangle.grey")];
 const assessmentElements = [...document.querySelectorAll(".rectangle.white")];
 
+// Show or hide one item on the page. The visible value decides whether it is displayed.
 function showElement(element, visible) {
   element.style.display = visible ? "flex" : "none";
 }
 
+// Look through all GAs and find the PLO that matches the code provided.
 function findPLO(code) {
   for (const [categoryId, outcomes] of Object.entries(PLO_DATA)) {
     const outcome = outcomes.find(item => item.code === code);
@@ -193,6 +199,9 @@ function findPLO(code) {
   return null;
 }
 
+
+// Build or refresh the PLO selection area based on the GAs currently selected.
+// The buttons shown here let the user narrow the results to specific PLOs.
 function renderPLOExplorer() {
   if (activeCategories.size === 0) {
     ploEmpty.hidden = false;
@@ -228,6 +237,8 @@ function renderPLOExplorer() {
     `;
   }).join("");
 
+  // LOGIC FOR SELECTION AND ALSO POP-UP SETUP
+
   ploGroups.querySelectorAll(".plo-button").forEach(button => {
     button.addEventListener("click", () => {
       const code = button.dataset.ploCode;
@@ -242,6 +253,9 @@ function renderPLOExplorer() {
     : `${selectedCategoryIds.reduce((total, id) => total + PLO_DATA[id].length, 0)} mapped PLOs available`;
 }
 
+
+// Update the main page after the user selects or clears a GA or PLO.
+// This controls which activity/assessment boxes are visible, their colours, and the selection counts.
 function renderSelection() {
   const hasSelection = activeCategories.size > 0;
   const visibleActivities = new Set();
@@ -252,6 +266,9 @@ function renderSelection() {
     if (!outcome || !activeCategories.has(outcome.categoryId)) activePLOs.delete(code);
   });
 
+
+    // Update the visual appearance of every Graduate Attribute button.
+  // This shows which buttons are currently selected.
   categoryButtons.forEach(button => {
     const categoryId = Number(button.dataset.categoryId);
     const selected = activeCategories.has(categoryId);
@@ -286,6 +303,8 @@ function renderSelection() {
     });
   }
 
+  // Show only the activities that match the current selection.
+  // If nothing is selected, show all activities and remove their special colours.
   activityElements.forEach(element => {
     const id = Number(element.id.replace("activity-", ""));
     showElement(element, !hasSelection || visibleActivities.has(id));
@@ -295,6 +314,8 @@ function renderSelection() {
     }
   });
 
+  // Show only the assessments that match the current selection.
+  // If nothing is selected, show all assessments and restore their default appearance.
   assessmentElements.forEach(element => {
     const id = Number(element.id.replace("assessment-", ""));
     showElement(element, !hasSelection || visibleAssessments.has(id));
@@ -305,8 +326,11 @@ function renderSelection() {
     }
   });
 
+  // Update the numbers displayed on the page to show how many activities and assessments are visible.
   activityCount.textContent = hasSelection ? visibleActivities.size : activityElements.length;
   assessmentCount.textContent = hasSelection ? visibleAssessments.size : assessmentElements.length;
+
+  // Refresh the PLO explorer so it matches the current selection.
   renderPLOExplorer();
 
   if (!hasSelection) {
@@ -314,14 +338,20 @@ function renderSelection() {
     return;
   }
 
+  // Collect the names of the selected Graduate Attributes to display in the summary.
   const selectedNames = categoryButtons
     .filter(button => activeCategories.has(Number(button.dataset.categoryId)))
     .map(button => button.querySelector(".category-name").textContent);
+
+  // Display a summary that changes depending on whether the user selected GAs or individual PLOs.
   selectionSummary.textContent = activePLOs.size
     ? `${activePLOs.size} PLO${activePLOs.size === 1 ? "" : "s"} selected · ${visibleActivities.size} activities + ${visibleAssessments.size} assessments`
     : `${activeCategories.size} selected · ${selectedNames.join(" + ")}`;
 }
 
+
+// Add a click action to every Graduate Attribute button.
+// Depending on the selected mode, the user can select one GA or several GAs.
 categoryButtons.forEach(button => {
   button.addEventListener("click", () => {
     const categoryId = Number(button.dataset.categoryId);
@@ -340,9 +370,13 @@ categoryButtons.forEach(button => {
   });
 });
 
+// When the selection-mode switch changes, update whether one or multiple GAs can be selected.
 toggle.addEventListener("change", () => {
   multiSelectEnabled = toggle.checked;
   modeLabel.textContent = multiSelectEnabled ? "Multiple attributes enabled" : "One attribute at a time";
+
+  // If multiple GAs were selected and the user switches back to single-selection mode,
+  // keep the first selected GA and remove the others.
 
   if (!multiSelectEnabled && activeCategories.size > 1) {
     const firstSelection = activeCategories.values().next().value;
@@ -352,15 +386,19 @@ toggle.addEventListener("change", () => {
   }
 });
 
+
+// The Clear button removes all selected GAs and PLOs.
 clearSelectionButton.addEventListener("click", () => {
   activeCategories.clear();
   activePLOs.clear();
   renderSelection();
 });
 
+// Run the selection function once when the page first loads.
+// This sets the initial appearance and counts.
 renderSelection();
 
-// Activity resource workspace elements
+// Find the elements used by the pop-up workspace that opens when an activity or assessment is clicked.
 const popup = document.getElementById('popup');
 const popupActivity = document.getElementById('popup-activity');
 const popupImage = document.getElementById('popup-image');
@@ -399,7 +437,9 @@ const externalTemplateCard = document.getElementById('external-template-card');
 const externalTemplateTitle = document.getElementById('external-template-title');
 let lastFocusedElement = null;
 
-// NEW: MAP OF CASE STUDY IMAGES LINKS FOR EACH LEARNING ACTIVITY
+
+//CONNECTION TO ACTIVITIES, BANNERS, DOWNLOADS, CASE-STUDY INFORMATION
+
 const ACTIVITY_IMAGES = {
   //Graduate attribute 1: Knowledge base
   "activity-1": "Images/cs-1.png",
@@ -464,59 +504,132 @@ const ACTIVITY_DOWNLOADS = {
 const popupTemplateLink = document.getElementById('popup-template-link');
 
 // NEW: MAP OF ACTIVITY IDS TO BANNER IMAGES
+
+
+// CUSTOM BACKGROUND IMAGES FOR EXPERIENTIAL LEARNING ACTIVITIES
 const ACTIVITY_BANNERS = {
-  //Graduate attribute 1: Knowledge base
-  "activity-1": "Images/ga1-banner.png",
-  "activity-4": "Images/ga1-banner.png",
-  "activity-7": "Images/ga1-banner.png",
-  // Graduate attribute 2: Problem analysis
-  "activity-10": "Images/ga2-banner.png",
-  "activity-13": "Images/ga2-banner.png",
-  "activity-16": "Images/ga2-banner.png",
+  // Graduate Attribute 1
+  "activity-1": "Images/Activities/activity-1.png",
+  "activity-4": "Images/Activities/activity-1.png",
+  "activity-7": "Images/Activities/activity-1.png",
+
+  // Graduate Attribute 2
+  "activity-10": "Images/Activities/activity-2.png",
+  "activity-13": "Images/Activities/activity-2.png",
+  "activity-16": "Images/Activities/activity-2.png",
+
+  // Graduate Attribute 3
+  "activity-19": "Images/Activities/activity-3.png",
+  "activity-22": "Images/Activities/activity-3.png",
+  "activity-25": "Images/Activities/activity-3.png",
+
+  // Graduate Attribute 4
+  "activity-2": "Images/Activities/activity-4.png",
+  "activity-5": "Images/Activities/activity-4.png",
+  "activity-8": "Images/Activities/activity-4.png",
+
+  // Graduate Attribute 5
+  "activity-11": "Images/Activities/activity-5.png",
+  "activity-14": "Images/Activities/activity-5.png",
+  "activity-17": "Images/Activities/activity-5.png",
+
+
+  //REPLACE FROM HERE
+  // Graduate Attribute 6
+  "activity-20": "Images/Activities/activity-5.png",
+  "activity-23": "Images/Activities/activity-5.png",
+  "activity-26": "Images/Activities/activity-5.png",
+
+  //Graduate attribute 7: Communication skills
+  "activity-3": "Images/Activities/activity-5.png",
+  "activity-6": "Images/Activities/activity-5.png",
+  "activity-9": "Images/Activities/activity-5.png",
+  //Graduate attribute 8: Professionalism
+  "activity-12": "Images/Activities/activity-5.png",
+  "activity-15": "Images/Activities/activity-5.png",
+  //Graduate attribute 9: Impact of engineering on society and environment
+  "activity-21": "Images/Activities/activity-5.png",
+  "activity-24": "Images/Activities/activity-5.png",
+  "activity-27": "Images/Activities/activity-5.png",
+  //Graduate attribute 10: Ethis and equity
+  "activity-28": "Images/Activities/activity-5.png",
+  "activity-31": "Images/Activities/activity-5.png",
+  "activity-34": "Images/Activities/activity-5.png",
+  //Graduate attribute 11: Economics and management
+  "activity-29": "Images/Activities/activity-5.png",
+  "activity-32": "Images/Activities/activity-5.png",
+  "activity-35": "Images/Activities/activity-5.png",
+  //Graduate attribute 12: Lifelong learning
+  "activity-30": "Images/Activities/activity-5.png",
+  "activity-33": "Images/Activities/activity-5.png",
+  "activity-36": "Images/Activities/activity-5.png",
+
+
+
+  // Continue the same pattern for activities 5–12...
+};
+
+
+// CUSTOM BACKGROUND IMAGES FOR ASSESSMENT METHODS
+const ASSESSMENT_BANNERS = {
+  // Graduate Attribute 1
+  "assessment-1": "Images/Activities/activity-1.png",
+  "assessment-4": "Images/Activities/activity-1.png",
+  "assessment-7": "Images/Activities/activity-1.png",
+
+  // Graduate Attribute 2
+  "assessment-10": "Images/Activities/activity-2.png",
+  "assessment-13": "Images/Activities/activity-2.png",
+  "assessment-16": "Images/Activities/activity-2.png",
+
   //Graduate attribute 3: Investigation
-  "activity-19": "Images/ga3-banner.png",
-  "activity-22": "Images/ga3-banner.png",
-  "activity-25": "Images/ga3-banner.png",
+  "assessment-19": "Images/Activities/activity-3.png",
+  "assessment-22": "Images/Activities/activity-3.png",
+  "assessment-25": "Images/Activities/activity-3.png",
   //Graduate attribute 4: Design 
-  "activity-2": "Images/ga4-banner.png",
-  "activity-5": "Images/ga4-banner.png",
-  "activity-8": "Images/ga4-banner.png",
+  "assessment-2": "Images/Activities/activity-4.png",
+  "assessment-5": "Images/Activities/activity-4.png",
+  "assessment-8": "Images/Activities/activity-4.png",
   //Graduate attribute 5: Use of engineering tools activities
-  "activity-11": "Images/ga5-banner.png",
-  "activity-14": "Images/ga5-banner.png",
-  "activity-17": "Images/ga5-banner.png",
+  "assessment-11": "Images/Activities/activity-5.png",
+  "assessment-14": "Images/Activities/activity-5.png",
+  "assessment-17": "Images/Activities/activity-5.png",
   //Graduate attribute 6: Individual and teamwork activities
-  "activity-20": "Images/ga6-banner.png",
-  "activity-23": "Images/ga6-banner.png",
-  "activity-26": "Images/ga6-banner.png",
+  "assessment-20": "Images/Activities/activity-5.png",
+  "assessment-23": "Images/Activities/activity-5.png",
+  "assessment-26": "Images/Activities/activity-5.png",
    //Graduate attribute 7: Communication skills activities
-  "activity-3": "Images/ga7-banner.png",
-  "activity-6": "Images/ga7-banner.png",
-  "activity-9": "Images/ga7-banner.png",
+  "assessment-3": "Images/Activities/activity-5.png",
+  "assessment-6": "Images/Activities/activity-5.png",
+  "assessment-9": "Images/Activities/activity-5.png",
   ///Graduate attribute 8: Professionalism
-  "activity-12": "Images/ga8-banner.png",
-  "activity-15": "Images/ga8-banner.png",
-  "activity-18": "Images/ga8-banner.png",
+  "assessment-12": "Images/Activities/activity-5.png",
+  "assessment-15": "Images/Activities/activity-5.png",
+  "assessment-18": "Images/Activities/activity-5.png",
   //Graduate attribute 9: Impact of engineering activities
-  "activity-21": "Images/ga9-banner.png",
-  "activity-24": "Images/ga9-banner.png",
-  "activity-27": "Images/ga9-banner.png",
+  "assessment-21": "Images/Activities/activity-5.png",
+  "assessment-24": "Images/Activities/activity-5.png",
+  "assessment-27": "Images/Activities/activity-5.png",
   //Graduate attribute 10: Ethics and quality
-  "activity-28": "Images/ga10-banner.png",
-  "activity-31": "Images/ga10-banner.png",
-  "activity-34": "Images/ga10-banner.png",
+  "assessment-28": "Images/Activities/activity-5.png",
+  "assessment-31": "Images/Activities/activity-5.png",
+  "assessment-34": "Images/Activities/activity-5.png",
   //Graduate attribute 11: Economics and project management 
-  "activity-29": "Images/ga11-banner.png",
-  "activity-32": "Images/ga11-banner.png",
-  "activity-35": "Images/ga11-banner.png",
+  "assessment-29": "Images/Activities/activity-5.png",
+  "assessment-32": "Images/Activities/activity-5.png",
+  "assessment-35": "Images/Activities/activity-5.png",
   //Graduate attribute 12: Lifelong learning activities
-  "activity-30": "Images/ga12-banner.png",
-  "activity-33": "Images/ga12-banner.png",
-  "activity-36": "Images/ga12-banner.png",
+  "assessment-30": "Images/Activities/activity-5.png",
+  "assessment-33": "Images/Activities/activity-5.png",
+  "assessment-36": "Images/Activities/activity-5.png",
+
 
 };
 
 
+
+// This is the main content library for each Graduate Attribute.
+// It stores case studies, including their context, challenge, suggested approach, evidence, and discussion questions.
 
 const CATEGORY_RESOURCE_DATA = {
   1: {
@@ -534,13 +647,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Mechanical systems · Reverse engineering",
-        title: "Reconstructing the design intent of a centrifugal pump",
-        summary: "Students disassemble a pump assembly and use first principles to explain component geometry, tolerances, and expected operating behavior.",
-        context: "A maintenance team needs a learning package for a legacy pump whose design documentation is incomplete.",
-        challenge: "Students must infer why each component was designed as it was while separating observation from engineering assumption.",
-        approach: "Assign component roles, require dimensioned sketches, and have teams connect observed features to mechanics, materials, and manufacturing principles.",
-        evidence: ["Component function map", "Dimensioned sketch", "Principle-to-feature matrix", "Design-intent briefing"],
-        prompts: ["Where did your team rely on inference rather than evidence?", "How would operating conditions change the design choices?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -559,13 +672,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Fluid systems · Operations",
-        title: "Resolving pressure loss in a process line",
-        summary: "Students use a system model and operating data to locate the most probable source of an unexpected pressure drop.",
-        context: "A food-processing line cannot meet its target flow after equipment was added downstream.",
-        challenge: "The available data contain inconsistent units and one unreliable sensor reading.",
-        approach: "Have students normalize the data, build a pressure-loss model, test sensitivity, and communicate the limitations of their conclusion.",
-        evidence: ["Validated data table", "System model", "Sensitivity analysis", "Operations memo"],
-        prompts: ["Which assumption has the greatest effect on your result?", "When is the evidence sufficient to act?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -584,13 +697,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Smart systems · Data validation",
-        title: "Validating a low-cost vibration sensor",
-        summary: "Students compare sensor performance against a reference instrument and determine fitness for condition monitoring.",
-        context: "A small manufacturer wants to deploy inexpensive sensors across rotating equipment.",
-        challenge: "Noise, mounting variation, and sampling rate all influence the measured signal.",
-        approach: "Ask teams to create a calibration protocol, quantify repeatability, visualize error, and define an application-specific acceptance threshold.",
-        evidence: ["Calibration protocol", "Processed data", "Error characterization", "Validation decision"],
-        prompts: ["What does your uncertainty estimate include and exclude?", "Would the sensor be acceptable for a different use case?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -609,13 +722,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Energy systems · Retrofit",
-        title: "Retrofitting a teaching laboratory for lower energy use",
-        summary: "Students develop and defend a retrofit concept within cost, disruption, safety, and performance constraints.",
-        context: "A mechanical engineering laboratory must reduce annual energy use without replacing its primary equipment.",
-        challenge: "Competing stakeholders value energy savings, teaching continuity, and maintainability differently.",
-        approach: "Provide baseline data and stakeholder statements. Require concepts, screening criteria, a preliminary model, and a design review.",
-        evidence: ["Requirements specification", "Concept alternatives", "Trade-off analysis", "Design review package"],
-        prompts: ["How were stakeholder priorities represented?", "Which risk should be resolved before detailed design?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -624,23 +737,23 @@ const CATEGORY_RESOURCE_DATA = {
     cases: [
       {
         sector: "Digital engineering · Simulation",
-        title: "Building a digital twin for a pump test rig",
-        summary: "Students combine CAD, sensor data, and a simplified simulation to monitor system performance.",
-        context: "A laboratory wants a digital representation that helps students compare predicted and measured pump behavior.",
-        challenge: "Tool output must be verified rather than accepted at face value.",
-        approach: "Assign a model-build, verification, and validation sequence. Require students to document settings and compare outputs against hand calculations.",
-        evidence: ["Model configuration record", "Verification calculation", "Measured-data comparison", "Tool limitation statement"],
-        prompts: ["How did you verify the tool was used correctly?", "What model limitation matters most for this decision?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       },
       {
         sector: "Advanced manufacturing · Automation",
-        title: "Programming a robotic machining cell",
-        summary: "Students select and integrate CAD/CAM, simulation, and robot-programming tools for a safe production task.",
-        context: "A job shop is evaluating whether a small batch component can be produced in an automated cell.",
-        challenge: "The proposed workflow must avoid collisions, meet tolerance, and provide a repeatable setup.",
-        approach: "Require a toolchain map, simulated cycle, risk review, and first-article inspection plan before any physical run.",
-        evidence: ["Digital process plan", "Collision check", "Inspection strategy", "First-article report"],
-        prompts: ["Where could tool interoperability introduce error?", "What must remain under human supervision?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -649,23 +762,23 @@ const CATEGORY_RESOURCE_DATA = {
     cases: [
       {
         sector: "Product development · Multidisciplinary teams",
-        title: "Coordinating a rapid autonomous rover sprint",
-        summary: "Mechanical, electrical, and software subteams coordinate interfaces while maintaining shared accountability.",
-        context: "Student teams have two weeks to deliver a rover that completes a defined inspection route.",
-        challenge: "Subsystem progress is uneven and late interface changes threaten integration.",
-        approach: "Introduce role charters, interface control documents, short stand-ups, and an integration readiness review.",
-        evidence: ["Team charter", "Interface document", "Decision log", "Individual contribution reflection"],
-        prompts: ["Which team process prevented rework?", "How was accountability balanced with psychological safety?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       },
       {
         sector: "Industry partnership · Project handoff",
-        title: "Recovering a stalled co-op design project",
-        summary: "Students diagnose team-process failures and plan a professional handoff for an incomplete industry project.",
-        context: "A student project changes personnel midway through the term with key decisions poorly documented.",
-        challenge: "The incoming team must rebuild trust, clarify ownership, and preserve technical continuity.",
-        approach: "Have students audit project artifacts, map responsibilities, conduct a handoff meeting, and propose team operating agreements.",
-        evidence: ["Project health audit", "Responsibility matrix", "Handoff package", "Team process improvement plan"],
-        prompts: ["What information was most costly to reconstruct?", "How should teams surface workload imbalance earlier?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -684,13 +797,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Public infrastructure · Non-technical audience",
-        title: "Explaining a flood-mitigation proposal to residents",
-        summary: "Students translate engineering risk and trade-offs for a community audience without losing technical accuracy.",
-        context: "Residents must understand why a proposed drainage upgrade affects cost, construction disruption, and residual risk.",
-        challenge: "The audience has varied technical knowledge and concerns about prior consultation.",
-        approach: "Ask students to produce a one-page brief, a public presentation, and responses to skeptical stakeholder questions.",
-        evidence: ["Plain-language brief", "Risk visualization", "Stakeholder presentation", "Response reflection"],
-        prompts: ["What technical detail was essential to retain?", "How did audience needs change your communication choices?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -709,13 +822,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Field engineering · Scope and competence",
-        title: "Working beyond one’s technical competence",
-        summary: "Students examine when to seek support, decline work, or obtain specialist review during a remote field assignment.",
-        context: "An engineer is asked to approve a temporary structural repair outside their primary discipline.",
-        challenge: "Delaying the decision affects operations, but an unsupported approval creates serious risk.",
-        approach: "Have students map competence limits, available expertise, immediate controls, and a defensible communication plan.",
-        evidence: ["Competence self-assessment", "Risk controls", "Consultation plan", "Professional record"],
-        prompts: ["What can the engineer responsibly do immediately?", "How should competence limitations be documented?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -733,14 +846,14 @@ const CATEGORY_RESOURCE_DATA = {
         prompts: ["How did system boundaries shape the result?", "Which impact cannot be reduced to a single score?"]
       },
       {
-        sector: "Community infrastructure · Water systems",
-        title: "Prioritizing upgrades for a remote water system",
-        summary: "Students balance reliability, affordability, local capacity, and environmental impact in an infrastructure decision.",
-        context: "A remote community faces recurring pump failures and high emergency-maintenance costs.",
-        challenge: "A technically advanced solution may not be maintainable with available skills and supply chains.",
-        approach: "Ask teams to compare options using technical, social, environmental, and operational criteria developed with stakeholder input.",
-        evidence: ["Stakeholder map", "Multi-criteria analysis", "Impact narrative", "Implementation roadmap"],
-        prompts: ["Whose definition of success shaped your criteria?", "How did maintainability affect technical preference?"]
+        sector: "Text holder",
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -759,13 +872,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Manufacturing · Ethical decision-making",
-        title: "Escalating a concealed product defect",
-        summary: "Students navigate loyalty, evidence quality, public safety, and whistleblowing obligations.",
-        context: "Test data suggest a component may fail outside nominal conditions, but management plans to ship on schedule.",
-        challenge: "The engineer has incomplete evidence and faces pressure not to delay release.",
-        approach: "Use staged evidence and role play. Require students to document ethical reasoning, escalation steps, and safeguards.",
-        evidence: ["Ethical issue framing", "Options and consequences", "Escalation record", "Defensible action plan"],
-        prompts: ["What threshold of evidence justifies escalation?", "How should conflicting obligations be prioritized?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -784,13 +897,13 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Entrepreneurship · Feasibility",
-        title: "Testing the business case for a predictive-maintenance device",
-        summary: "Students assess whether a technically promising sensor product creates enough customer value to justify development.",
-        context: "A student team proposes a retrofit monitoring device for small manufacturers with aging equipment.",
-        challenge: "The market is price-sensitive and savings depend on uncertain failure frequency.",
-        approach: "Require customer assumptions, cost structure, break-even analysis, and a staged plan for reducing business uncertainty.",
-        evidence: ["Value proposition", "Cost model", "Break-even sensitivity", "Go/no-go recommendation"],
-        prompts: ["Which assumption most threatens viability?", "What low-cost experiment should the team run next?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   },
@@ -809,55 +922,57 @@ const CATEGORY_RESOURCE_DATA = {
       },
       {
         sector: "Professional practice · Growth planning",
-        title: "Responding to a changing engineering role",
-        summary: "Students create a professional development plan after automation changes the skills expected in an entry-level role.",
-        context: "A graduate engineer’s organization is adopting model-based systems engineering across project teams.",
-        challenge: "The engineer must prioritize learning while meeting current project responsibilities.",
-        approach: "Provide a role profile and skills inventory. Require a gap analysis, learning experiments, milestones, and feedback sources.",
-        evidence: ["Skills-gap analysis", "Development roadmap", "Evidence milestones", "Reflective progress review"],
-        prompts: ["Which capability should be developed first?", "How will feedback change the learning plan?"]
+        title: "Text holder",
+        summary: "Text holder",
+        context: "Text holder.",
+        challenge: "Text holder.",
+        approach: "Text holder.",
+        evidence: ["Text holder"],
+        prompts: ["Text holder"]
       }
     ]
   }
 };
 
+// ASSESSMENTS SECTION
+
 const ASSESSMENT_DESCRIPTIONS = {
   1: "Short, focused checks that measure students’ understanding of foundational engineering concepts and reveal misconceptions early enough for instructional response.",
   2: "A practical examination in which students demonstrate accurate, efficient, and responsible use of engineering software under defined conditions.",
   3: "A structured evaluation of students’ ability to interpret environmental evidence, compare impacts, and justify sustainability recommendations.",
-  4: "A technical communication task that documents experimental methods, results, uncertainty, and defensible engineering conclusions.",
-  5: "A curated collection of digital artifacts that demonstrates tool proficiency, design progression, verification, and reflective growth over time.",
-  6: "A public-facing presentation that assesses whether students can communicate engineering work accurately and meaningfully to community audiences.",
+  4: "Text holder.",
+  5: "A collection of digital artifacts that demonstrates tool proficiency, design progression, verification, and reflective growth over time.",
+  6: "Text holder.",
   7: "A concise oral or poster presentation that evaluates scientific reasoning, technical accuracy, visual communication, and response to questions.",
-  8: "A structured peer-review process that evaluates how effectively engineering tools were selected, applied, verified, and documented in project work.",
+  8: "Text holder.",
   9: "An evidence-based research paper that assesses students’ ability to investigate environmental effects and synthesize technical and societal perspectives.",
-  10: "A formal report that evaluates problem definition, analytical method, assumptions, solution quality, and the strength of the final recommendation.",
+  10: "Text holder.",
   11: "A combination of peer and self-rating that makes teamwork behaviours, contribution quality, reliability, and collaborative growth visible.",
-  12: "A reasoned essay in which students identify an ethical conflict, apply professional principles, evaluate consequences, and defend a course of action.",
+  12: "Text holder.",
   13: "A guided peer critique that assesses the logic, efficiency, assumptions, and communication of another student’s problem-solving approach.",
-  14: "Authentic workplace feedback that evaluates technical contribution, professionalism, initiative, communication, and readiness for engineering practice.",
+  14: "Text holder.",
   15: "A facilitated discussion and reflection that captures how students interpret experience, integrate feedback, and revise professional judgement.",
-  16: "A comparative peer assessment focused on the clarity, validity, and adaptability of different approaches to the same engineering problem.",
+  16: "Text holder.",
   17: "A reflective account that connects team outcomes to individual decisions, responsibilities, contributions, and areas for improvement.",
-  18: "An assessment of how well a proposed engineering solution identifies exclusion, addresses diverse needs, and advances equitable outcomes.",
+  18: "Text holder.",
   19: "A formal research report that evaluates data quality, statistical interpretation, uncertainty, and the relationship between evidence and claims.",
-  20: "A scored technical presentation using explicit criteria for clarity, audience engagement, visual design, and engineering accuracy.",
+  20: "Text holder.",
   21: "A financial and strategic evaluation that tests whether students can connect technical choices to cost, value, risk, and organizational feasibility.",
-  22: "An evaluation of students’ ability to formulate a testable question, select a valid method, control variables, and interpret experimental limitations.",
+  22: "Text holder.",
   23: "A criterion-based review of technical documentation for completeness, traceability, precision, usability, and professional quality.",
-  24: "A performance assessment in which students manage scope, schedule, resources, risk, and stakeholder decisions in a realistic simulation.",
+  24: "Text holder.",
   25: "Direct observation of laboratory preparation, safe practice, procedural skill, data quality, troubleshooting, and professional conduct.",
-  26: "External feedback that evaluates innovation, technical execution, communication, and responsiveness using the perspective of industry or faculty judges.",
+  26: "Text holder.",
   27: "A panel review of whether a proposed project is technically credible, operationally practical, economically viable, and ready for further investment.",
-  28: "A detailed evaluation of design reports and CAD evidence for requirements traceability, analysis quality, manufacturability, and communication.",
+  28: "Text holder.",
   29: "A reflective written analysis of professional responsibility, conduct, judgement, communication, and lessons for future engineering practice.",
-  30: "A longitudinal journal that documents learning goals, strategies, feedback, evidence of progress, and adjustments to the student’s development plan.",
+  30: "Text holder.",
   31: "A live demonstration that assesses whether a prototype performs its intended function and whether students can explain results and limitations.",
-  32: "A role-play assessment that makes ethical reasoning visible through stakeholder dialogue, decision-making, justification, and professional communication.",
+  32: "Text holder.",
   33: "Verified completion of a relevant certification used as evidence of defined technical or professional competence, supported by reflection on application.",
-  34: "A holistic rubric that assesses the originality, technical feasibility, stakeholder value, and environmental sustainability of an engineering proposal.",
+  34: "Text holder.",
   35: "A multi-source evaluation of professional performance, collaboration, reliability, communication, and contribution in an authentic practice setting.",
-  36: "An individualized development plan that identifies learning goals, actions, evidence, timelines, and faculty feedback for continued professional growth."
+  36: "Text holder."
 };
 
 const caseStudySector = document.getElementById('case-study-sector');
@@ -1027,6 +1142,7 @@ function renderActivityResources(activityId) {
   showResource('overview');
 }
 
+//
 function renderAssessmentResources(assessmentId) {
   currentItemId = assessmentId;
   currentResourceType = 'assessment';
@@ -1046,10 +1162,19 @@ function renderAssessmentResources(assessmentId) {
   suggestedDuration.textContent = profile.duration;
   evidenceType.textContent = profile.evidence;
   alignedEvidenceTitle.textContent = 'Aligned experiential learning activities';
-  const firstActivityId = CATEGORY_DATA[currentCategoryId].learning[0];
-  const bannerSource = ACTIVITY_BANNERS[`activity-${firstActivityId}`] || '';
-  popupBanner.src = bannerSource;
-  popupBanner.style.display = bannerSource ? 'block' : 'none';
+
+
+  
+// Get the customized background image assigned to this assessment.
+// Each assessment has its own image in the ASSESSMENT_BANNERS list.
+const bannerSource = ASSESSMENT_BANNERS[assessmentId] || '';
+
+// Display the selected image in the pop-up header.
+popupBanner.src = bannerSource;
+popupBanner.style.display = bannerSource ? 'block' : 'none';
+
+
+
   alignedAssessments.innerHTML = CATEGORY_DATA[currentCategoryId].learning
     .map(id => `<span>${document.getElementById(`activity-${id}`).textContent.trim()}</span>`).join('');
   renderCaseCards(buildAssessmentExamples(assessmentTitle, currentCategoryId));
@@ -1150,22 +1275,61 @@ document.querySelectorAll('.download-button[data-template]').forEach(button => {
   button.addEventListener('click', () => downloadTemplate(button.dataset.template));
 });
 
+//WORK IN PROGRESS
+
+
+// Make activity and assessment boxes clickable.
+// Only the first two assessment methods will be clickable.
 document.querySelectorAll('.rectangle').forEach(rect => {
+
+  // Identify assessment boxes.
+  const isAssessment = rect.id.startsWith('assessment-');
+
+  // Extract the assessment number from its ID.
+  const assessmentNumber = isAssessment
+    ? Number(rect.id.replace('assessment-', ''))
+    : null;
+
+  // Allow activities to remain clickable.
+  // For assessments, only allow numbers 1 and 2.
+  const isClickable = !isAssessment || assessmentNumber <= 2;
+
+  // If this assessment is not clickable, leave it visible and skip its click actions.
+  if (!isClickable) {
+    rect.style.cursor = 'default';
+    rect.setAttribute('aria-disabled', 'true');
+    return;
+  }
+
+  // Make clickable boxes accessible using a keyboard.
   rect.setAttribute('role', 'button');
   rect.setAttribute('tabindex', '0');
 
+  // This function opens the selected activity or assessment.
   const openPopup = () => {
-    document.querySelectorAll('.rectangle').forEach(element => element.classList.remove('selected'));
+
+    document.querySelectorAll('.rectangle').forEach(element =>
+      element.classList.remove('selected')
+    );
+
     rect.classList.add('selected');
-    if (rect.classList.contains('grey')) renderActivityResources(rect.id);
-    else renderAssessmentResources(rect.id);
+
+    if (rect.classList.contains('grey')) {
+      renderActivityResources(rect.id);
+    } else {
+      renderAssessmentResources(rect.id);
+    }
+
     lastFocusedElement = document.activeElement;
     popup.hidden = false;
     document.body.classList.add('modal-open');
     closeBtn.focus();
   };
 
+  // Open the pop-up when clicked.
   rect.addEventListener('click', openPopup);
+
+  // Allow keyboard users to open the pop-up with Enter or Space.
   rect.addEventListener('keydown', event => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -1173,6 +1337,7 @@ document.querySelectorAll('.rectangle').forEach(rect => {
     }
   });
 });
+
 
 closeBtn.addEventListener('click', closePopup);
 popup.addEventListener('click', event => {
